@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restaurant Reviews</title>
-</head>
+<head><title>Restaurant Reviews</title></head>
 <body>
     <h1>Restaurant Reviews</h1>
-    <a href="{{ url_for('post_review') }}">Post a New Review</a>
+    <a href="{{ url_for('post_review') }}">Post a New Review</a> | 
+    <a href="{{ url_for('logout') }}">Logout</a>
     <hr>
+    <h2>Your Favorites</h2>
+    <ul>
+        {% for favorite in favorites %}
+            <li>{{ favorite.restaurant }}</li>
+        {% endfor %}
+    </ul>
+    <h2>Your Reviews</h2>
     {% if reviews %}
         <ul>
             {% for review in reviews %}
@@ -17,6 +21,9 @@
                     <strong>Rating:</strong> {{ review.rating }} <br>
                     <strong>Review:</strong> {{ review.review }} <br>
                     <strong>Date:</strong> {{ review.date_posted }} <br>
+                    <form action="{{ url_for('favorite', restaurant=review.restaurant) }}" method="post">
+                        <button type="submit">Add to Favorites</button>
+                    </form>
                 </li>
                 <hr>
             {% endfor %}
