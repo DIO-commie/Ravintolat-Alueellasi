@@ -1,0 +1,58 @@
+Ohje database luomiseen
+käytät Django'n auth_user-taulua käyttäjien hallintaan. Django luo tämän taulun automaattisesti migraatioiden avulla
+
+-- Luo tietokanta
+CREATE DATABASE ravintolasovellus_db;
+
+-- Luo käyttäjä ja anna sille salasana
+CREATE USER postgres_kayttaja WITH PASSWORD 'salasana';
+
+-- Anna käyttäjälle oikeudet tietokantaan
+GRANT ALL PRIVILEGES ON DATABASE ravintolasovellus_db TO postgres_kayttaja;
+
+
+---------------------------------------------------------------------------------------
+
+Ohje dtabase formatointiin
+
+-- Yhdistä luotuun tietokantaan
+\c ravintolasovellus_db;
+
+-- Taulu Ravintola
+CREATE TABLE ravintolat_ravintola (
+    id SERIAL PRIMARY KEY,
+    nimi VARCHAR(100) NOT NULL,
+    osoite VARCHAR(200) NOT NULL,
+    puhelin VARCHAR(20),
+    hinta_taso INTEGER NOT NULL CHECK (hinta_taso BETWEEN 1 AND 5),
+    korkea_taso BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+-- Taulu Profiili
+CREATE TABLE ravintolat_profiili (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER UNIQUE NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES auth_user(id) ON DELETE CASCADE
+);
+
+-- Suosikit - Moni-moni-suhde Profiilin ja Ravintolan välillä
+CREATE TABLE ravintolat_profiili_suosikit (
+    id SERIAL PRIMARY KEY,
+    profiili_id INTEGER NOT NULL,
+    ravintola_id INTEGER NOT NULL,
+    FOREIGN KEY (profiili_id) REFERENCES ravintolat_profiili(id) ON DELETE CASCADE,
+    FOREIGN KEY (ravintola_id) REFERENCES ravintolat_ravintola(id) ON DELETE CASCADE,
+    UNIQUE (profiili_id, ravintola_id)
+);
+
+-- Taulu Arvostelu
+CREATE TABLE ravintolat_arvostelu (
+    id SERIAL PRIMARY KEY,
+    ravintola_id INTEGER NOT NULL,
+    kayttaja_id INTEGER NOT NULL,
+    tahdet INTEGER NOT NULL CHECK (tahdet BETWEEN 1 AND 5),
+    kommentti TEXT,
+    luotu TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    FOREIGN KEY (ravintola_id) REFERENCES ravintolat_ravintola(id) ON DELETE CASCADE,
+    FOREIGN KEY (kayttaja_id) REFERENCES auth_user(id) ON DELETE CASCADE
+);
