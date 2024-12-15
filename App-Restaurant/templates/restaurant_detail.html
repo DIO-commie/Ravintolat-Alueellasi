@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>{{ restaurant.name }}</h1>
+<p><strong>Address:</strong> {{ restaurant.address }}</p>
+
+<h2>Reviews</h2>
+<ul class="list-group">
+{% for rev in reviews %}
+  <li class="list-group-item">
+    <strong>Rating:</strong> {{ rev.rating }}<br>
+    {% if rev.text_review %}
+      <strong>Review:</strong> {{ rev.text_review }}<br>
+    {% else %}
+      <em>No text review provided.</em><br>
+    {% endif %}
+    <small><em>By: {{ rev.user.username }}</em></small>
+  </li>
+{% endfor %}
+</ul>
+
+<br>
+{% if current_user.is_authenticated %}
+<a href="{{ url_for('add_review', restaurant_id=restaurant.id) }}" class="btn btn-primary">Add a Review</a>
+{% else %}
+<em>You must <a href="{{ url_for('login') }}">log in</a> to add a review.</em>
+{% endif %}
+{% endblock %}
