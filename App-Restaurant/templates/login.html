@@ -1,23 +1,23 @@
 {% extends "layout.html" %}
 {% block content %}
-<h1>Login</h1>
-<form method="post">
+<h1 class="mb-4">Login</h1>
+<form method="post" class="col-md-6">
   {{ form.csrf_token }}
   <div class="mb-3">
-    {{ form.username.label }}<br>
+    {{ form.username.label }}
     {{ form.username(class_="form-control") }}
     {% for error in form.username.errors %}
       <div class="text-danger">{{ error }}</div>
     {% endfor %}
   </div>
   <div class="mb-3">
-    {{ form.password.label }}<br>
+    {{ form.password.label }}
     {{ form.password(class_="form-control") }}
     {% for error in form.password.errors %}
       <div class="text-danger">{{ error }}</div>
     {% endfor %}
   </div>
-  <div class="mb-3">
+  <div>
     {{ form.submit(class_="btn btn-primary") }}
   </div>
 </form>
