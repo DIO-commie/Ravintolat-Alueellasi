@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Add Review for {{ restaurant.name }}</h1>
+<form method="post">
+  {{ form.csrf_token }}
+  <div class="mb-3">
+    {{ form.rating.label }}<br>
+    {{ form.rating(class_="form-control") }}
+    {% for error in form.rating.errors %}
+        <div class="text-danger">{{ error }}</div>
+    {% endfor %}
+  </div>
+  <div class="mb-3">
+    {{ form.text_review.label }}<br>
+    {{ form.text_review(class_="form-control") }}
+    {% for error in form.text_review.errors %}
+        <div class="text-danger">{{ error }}</div>
+    {% endfor %}
+  </div>
+  <div class="mb-3">
+    {{ form.submit(class_="btn btn-primary") }}
+  </div>
+</form>
+{% endblock %}
